@@ -1,34 +1,4 @@
 import sys
-inFile1 = sys.argv[1]
-inFile2 = sys.argv[2]
-outFile1 = sys.argv[3]
-outFile2 = sys.argv[4]
-outFile3 = sys.argv[5]
-
-
-# use two level hash table to store data
-# friend[id1][id2] = 1 means they have payments
-# the time complexity of checking whether two ids are "1st degree friend" is O(1) 
-friend = dict()
-count = 0
-with open(inFile1, 'r') as f:
-    next(f)   # skip header
-    for line in f:        
-        info = line.split(',')
-        if len(info) > 3:   # consider only valid lines which contain at least 3 columns
-            id1 = info[1]
-            id2 = info[2]
-            if id1 not in friend:
-                friend[id1] = dict()
-                friend[id1][id2] = 1
-            elif id2 not in friend[id1]:
-                friend[id1][id2] = 1
-            if id2 not in friend:
-                friend[id2] = dict()
-                friend[id2][id1] = 1
-            elif id1 not in friend[id2]:
-                friend[id2][id1] = 1
-
 
 ### feature 1
 # for a new payment, we just need to check whether they had a transaction with
@@ -44,15 +14,6 @@ def feature1(line, friend):
             return True
     else:
         return False
-
-with open(inFile2, 'r') as f:
-    with open(outFile1, 'w') as output:
-        next(f)   # skip header
-        for line in f:
-            if feature1(line, friend):
-                output.write('trusted\n')
-            else:
-                output.write('unverified\n')
 
 
 # feature 2
@@ -74,15 +35,6 @@ def feature2(line, friend):
                     return True
     else:
         return False
-
-with open(inFile2, 'r') as f:
-    with open(outFile2, 'w') as output:
-        next(f)   # skip header
-        for line in f:
-            if feature2(line, friend):
-                output.write('trusted\n')
-            else:
-                output.write('unverified\n')
 
 
 # feature 3
@@ -122,12 +74,67 @@ def feature3(line, friend, searched):
     else:   # invalid lines
         return False
 
-with open(inFile2, 'r') as f:
-    with open(outFile3, 'w') as output:
+
+def main():
+    inFile1 = sys.argv[1]
+    inFile2 = sys.argv[2]
+    outFile1 = sys.argv[3]
+    outFile2 = sys.argv[4]
+    outFile3 = sys.argv[5]
+
+    # use two level hash table to store data
+    # friend[id1][id2] = 1 means they have payments
+    # the time complexity of checking whether two ids are "1st degree friend" is O(1) 
+    friend = dict()
+    count = 0
+    with open(inFile1, 'r') as f:
         next(f)   # skip header
-        for line in f:
-            searched = dict()   # store searched elements
-            if feature3(line, friend, searched):
-                output.write('trusted\n')
-            else:
-                output.write('unverified\n')
+        for line in f:        
+            info = line.split(',')
+            if len(info) > 3:   # consider only valid lines which contain at least 3 columns
+                id1 = info[1]
+                id2 = info[2]
+                if id1 not in friend:
+                    friend[id1] = dict()
+                    friend[id1][id2] = 1
+                elif id2 not in friend[id1]:
+                    friend[id1][id2] = 1
+                if id2 not in friend:
+                    friend[id2] = dict()
+                    friend[id2][id1] = 1
+                elif id1 not in friend[id2]:
+                    friend[id2][id1] = 1
+
+    # feature 1
+    with open(inFile2, 'r') as f:
+        with open(outFile1, 'w') as output:
+            next(f)   # skip header
+            for line in f:
+                if feature1(line, friend):
+                    output.write('trusted\n')
+                else:
+                    output.write('unverified\n')
+
+    # feature 2
+    with open(inFile2, 'r') as f:
+        with open(outFile2, 'w') as output:
+            next(f)   # skip header
+            for line in f:
+                if feature2(line, friend):
+                    output.write('trusted\n')
+                else:
+                    output.write('unverified\n')
+
+    # feature 3
+    with open(inFile2, 'r') as f:
+        with open(outFile3, 'w') as output:
+            next(f)   # skip header
+            for line in f:
+                searched = dict()   # store searched elements
+                if feature3(line, friend, searched):
+                    output.write('trusted\n')
+                else:
+                    output.write('unverified\n')
+
+if __name__ == "__main__":
+    main()
