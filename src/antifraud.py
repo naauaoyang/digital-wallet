@@ -39,12 +39,14 @@ def feature2(line, friend):
 
 # feature 3
 # similar to feature 3, for a new payment, we first check whether they are 
-# "1st friend", if not then check "2nd degree", if not then check "3rd degree"
-# if not then "4th degree" through iteration
-# add a searched dictionary to store friends we have checked in lower degree so 
-# we will not need to search again in higher degree
-# the time complexity of the worst case is O(n^4) where n is number of 
-# friends of a person, however on average it is much faster
+# "1st degree friend", if not then check "2nd degree degree", if not then check 
+# "3rd degree", if not then "4th degree" through iteration
+# we add a searched dictionary to store friends we have checked in lower or equal 
+# degree so we will not need to search again in higher degree
+# the time complexity of the worst case is O(n^3) where n is number of friends of 
+# a person, however on average it is much faster because the program will terminate 
+# once it make sure the two ids are within "4th degree" friend and it will not 
+# waste time on ids that have already been searched in lower or equal degree
 def feature3(line, friend, searched):
     info = line.split(',')
     if len(info) > 3:   # valid lines
